@@ -19,6 +19,77 @@ main{max-width:1480px;margin:auto;padding:0 24px}.hero{padding:58px 0 40px;displ
 @media(max-width:1000px){main{padding:0 16px}.grid .card{flex-basis:245px}}
 @media(max-width:800px){.detailModel{height:290px}.links{display:none}.hero{grid-template-columns:1fr;padding-top:35px}.heroArt{height:260px}.grid .card{flex-basis:235px}.detailModal{grid-template-columns:1fr}.detailCanvas{height:290px}}
 @media(max-width:540px){main{padding:0 12px}.nav{gap:8px;padding:9px 12px}.brand{font-size:17px}.logo{width:34px;height:34px}.actions .btn{font-size:11px;padding:8px}.hero h1{font-size:35px}.sectionTitle{align-items:stretch;flex-direction:column}.search{width:100%}.grid{gap:12px}.grid .card{flex-basis:82vw;max-width:310px}.productCanvas{height:245px}.features{grid-template-columns:1fr}.heroArt{height:230px}}
+ /* ===== Premium black & red redesign for Yadak Khodro ===== */
+/* این کد را داخل index.html و درست قبل از </style> قرار بده. */
+:root{
+ --bg:#08090d;--panel:#171116;--panel2:#24151c;--line:#512431;
+ --text:#f7f1f3;--muted:#b8a9af;--orange:#ed3348;--orange2:#ff8290;
+}
+html{background:#08090d}
+body{
+ background-color:#08090d;
+ background-image:
+  radial-gradient(ellipse at 78% 8%,rgba(151,20,48,.38),transparent 36%),
+  radial-gradient(ellipse at 8% 48%,rgba(95,15,36,.28),transparent 40%),
+  repeating-linear-gradient(135deg,rgba(255,255,255,.018) 0 1px,transparent 1px 46px),
+  linear-gradient(135deg,#08090d 0%,#160a10 48%,#08090d 100%);
+ background-size:180% 180%,180% 180%,100% 100%,100% 100%;
+ animation:redAtmosphere 22s ease-in-out infinite alternate;
+}
+@keyframes redAtmosphere{
+ 0%{background-position:0% 0%,100% 100%,0 0,0 0}
+ 100%{background-position:100% 80%,0% 15%,0 0,0 0}
+}
+.header{background:rgba(8,9,13,.91);border-bottom-color:#632536;box-shadow:0 8px 30px #0005}
+.logo{background:linear-gradient(140deg,#ff7180,#a90f2b);box-shadow:0 0 22px #ed334833}
+.links a:hover{color:#ff8290}
+.btn{background:linear-gradient(145deg,#24151c,#140e13);border-color:#59303b;transition:transform .22s,border-color .22s,filter .22s}
+.btn:hover{border-color:#ed3348;transform:translateY(-2px)}
+.btn.primary,.add{background:linear-gradient(135deg,#ff5365,#a90f2b);box-shadow:0 7px 22px #ed334833}
+.btn.primary:hover,.add:hover{filter:brightness(1.16)}
+.hero h1 span,.eyebrow,.cat{color:#ff7183}
+.heroArt{
+ background:radial-gradient(ellipse at 50% 45%,#54202d 0%,#28121b 48%,#0c0b10 100%);
+ border-color:#8d3044;box-shadow:inset 0 0 55px #ed33481c,0 18px 55px #0007;
+}
+.heroArt:before{border-color:#ffb4bd2b;box-shadow:0 0 0 35px #ed334811,0 0 0 70px #ed334809}
+.heroWheel{filter:drop-shadow(0 15px 25px #000b)}
+.tag{border:1px solid #713143;background:#100b10e8;color:#ffdce1}
+.search{background:#171116;border-color:#512431}
+.search:focus,.field input:focus{outline:none;border-color:#ed3348;box-shadow:0 0 0 3px #ed334820}
+.chip{border-color:#512431;background:#140e13;color:#c5b3b9;transition:.2s}
+.chip.active,.chip:hover{background:#ed334820;border-color:#ed3348;color:#ff9ba6}
+.card{
+ background:linear-gradient(145deg,#28151e 0%,#171016 72%,#100d11 100%);
+ border-color:#512431;box-shadow:0 12px 30px #0003;
+ transition:transform .28s,border-color .28s,box-shadow .28s;
+}
+.card:hover{transform:translateY(-7px);border-color:#ed3348;box-shadow:0 18px 38px #ed334820}
+.productModel,.productCanvas{
+ background:radial-gradient(circle at 50% 46%,#51202d 0%,#29131c 58%,#120d12 100%);
+}
+.detailModel,.detailCanvas{background:radial-gradient(circle,#51202d,#170d13)}
+.hint{background:#160b10e8;border:1px solid #663042;color:#ffe1e5}
+.feature{background:linear-gradient(145deg,#28151e,#130e13);border-color:#512431;box-shadow:0 10px 28px #0003}
+.feature strong{color:#fff}
+.grid::-webkit-scrollbar-track{background:#24151c}
+.grid::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#a90f2b,#ff6475)}
+.modal{background:linear-gradient(145deg,#24151c,#100d12);border-color:#653043;box-shadow:0 24px 80px #000a}
+.close{background:#3a202a;color:#ffe5e8}
+.field input{background:#100d12;border-color:#56303b}
+.cartLine{border-bottom-color:#512431}
+.qty button{background:#2b1720;border-color:#653043}
+.payBrand,.paySummary{background:#130e13;border-color:#512431}
+.payIcon{background:linear-gradient(135deg,#ff7180,#a90f2b)}
+.demoNotice{background:#3e2020;color:#ffd3a0}
+.toast{background:#3b1b25;border-color:#9b3a50;color:#ffe3e7}
+footer{border-top-color:#512431}
+@media(prefers-reduced-motion:reduce){
+ body{animation:none}
+ .heroWheel{animation:none}
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important}
+}
+
 </style>
 </head>
 <body>

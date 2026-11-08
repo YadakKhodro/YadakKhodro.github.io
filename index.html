@@ -159,7 +159,22 @@ function drawProduct(canvas,kind,angle=0){
  c.fillStyle='rgba(0,0,0,.16)';c.beginPath();c.ellipse(cx,cy+scale*1.05,scale*.85,scale*.12,0,0,7);c.fill();
 }
 function attachRotation(canvas,kind){let angle=0,startX=0,drag=false;drawProduct(canvas,kind,angle);canvas.addEventListener('pointerdown',e=>{drag=true;startX=e.clientX;canvas.setPointerCapture(e.pointerId)});canvas.addEventListener('pointermove',e=>{if(!drag)return;angle+=(e.clientX-startX)*.012;startX=e.clientX;drawProduct(canvas,kind,angle)});canvas.addEventListener('pointerup',()=>drag=false);canvas.addEventListener('pointercancel',()=>drag=false);canvas.addEventListener('dblclick',()=>{angle=0;drawProduct(canvas,kind,angle)});return ()=>{canvas.replaceWith(canvas.cloneNode(true))}}
-function modelViewerMarkup(p,cls='productModel'){return `<model-viewer class="${cls}" src="${p.model}" alt="مدل سه‌بعدی ${p.name}" camera-controls auto-rotate auto-rotate-delay="900" rotation-per-second="18deg" shadow-intensity="1" exposure="1.05" interaction-prompt="none" loading="lazy"></model-viewer>`}
+function modelViewerMarkup(p,cls='productModel'){
+return `<model-viewer
+class="${cls}"
+src="${p.model}"
+alt="مدل سه‌بعدی ${p.name}"
+camera-controls
+disable-pan
+auto-rotate
+auto-rotate-delay="900"
+rotation-per-second="18deg"
+shadow-intensity="1"
+exposure="1.05"
+interaction-prompt="none"
+loading="lazy"
+></model-viewer>`
+}
 function installModelFallback(host,p,cls='productModel'){const mv=host.querySelector('model-viewer');if(!mv)return;mv.addEventListener('error',()=>{if(host.dataset.fallback==='1')return;host.dataset.fallback='1';mv.remove();const c=document.createElement('canvas');c.className=cls==='detailModel'?'detailCanvas':'productCanvas';host.appendChild(c);attachRotation(c,p.kind);const note=document.createElement('span');note.className='hint';note.textContent='بارگذاری مدل سه‌بعدی نیازمند اتصال به اینترنت است';host.appendChild(note)},{once:true})}
 function render(){const q=document.getElementById('search').value.trim().toLowerCase(),list=items.filter(p=>(category==='همه'||p.cat===category)&&(p.name+' '+p.cat+' '+p.desc).toLowerCase().includes(q));const grid=document.getElementById('grid');grid.innerHTML='';if(!list.length){grid.innerHTML='<div class="empty">محصولی پیدا نشد.</div>';return}list.forEach(p=>{let el=document.createElement('article');el.className='card';el.innerHTML=`<div class="visual">${modelViewerMarkup(p)}</div><div class="body"><div class="cat">${p.cat}</div><h3>${p.name}</h3><div class="desc">${p.desc}</div><div class="priceRow"><div class="price">${money(p.price)}</div></div><div class="rowBtns"><button class="outline" data-detail="${p.id}">نمایش بزرگ</button><button class="add" data-add="${p.id}">افزودن به سبد</button></div></div>`;grid.appendChild(el);installModelFallback(el.querySelector('.visual'),p)});grid.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>add(b.dataset.add));grid.querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>detail(b.dataset.detail))}
 function add(id){cart[id]=(cart[id]||0)+1;save();toast('به سبد خرید اضافه شد.')}function save(){localStorage.setItem('yk_cart_v2',JSON.stringify(cart));document.getElementById('count').textContent=fmt(Object.values(cart).reduce((a,b)=>a+b,0))}

@@ -178,7 +178,28 @@ loading="lazy"
 function installModelFallback(host,p,cls='productModel'){const mv=host.querySelector('model-viewer');if(!mv)return;mv.addEventListener('error',()=>{if(host.dataset.fallback==='1')return;host.dataset.fallback='1';mv.remove();const c=document.createElement('canvas');c.className=cls==='detailModel'?'detailCanvas':'productCanvas';host.appendChild(c);attachRotation(c,p.kind);const note=document.createElement('span');note.className='hint';note.textContent='بارگذاری مدل سه‌بعدی نیازمند اتصال به اینترنت است';host.appendChild(note)},{once:true})}
 function render(){const q=document.getElementById('search').value.trim().toLowerCase(),list=items.filter(p=>(category==='همه'||p.cat===category)&&(p.name+' '+p.cat+' '+p.desc).toLowerCase().includes(q));const grid=document.getElementById('grid');grid.innerHTML='';if(!list.length){grid.innerHTML='<div class="empty">محصولی پیدا نشد.</div>';return}list.forEach(p=>{let el=document.createElement('article');el.className='card';el.innerHTML=`<div class="visual">${modelViewerMarkup(p)}</div><div class="body"><div class="cat">${p.cat}</div><h3>${p.name}</h3><div class="desc">${p.desc}</div><div class="priceRow"><div class="price">${money(p.price)}</div></div><div class="rowBtns"><button class="outline" data-detail="${p.id}">نمایش بزرگ</button><button class="add" data-add="${p.id}">افزودن به سبد</button></div></div>`;grid.appendChild(el);installModelFallback(el.querySelector('.visual'),p)});grid.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>add(b.dataset.add));grid.querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>detail(b.dataset.detail))}
 function add(id){cart[id]=(cart[id]||0)+1;save();toast('به سبد خرید اضافه شد.')}function save(){localStorage.setItem('yk_cart_v2',JSON.stringify(cart));document.getElementById('count').textContent=fmt(Object.values(cart).reduce((a,b)=>a+b,0))}
-function show(id){document.getElementById(id).classList.add('show')}function hide(){document.querySelectorAll('.overlay').forEach(x=>x.classList.remove('show'))}document.querySelectorAll('[data-close]').forEach(b=>b.onclick=hide);document.querySelectorAll('.overlay').forEach(o=>o.onclick=e=>{if(e.target===o)hide()});
+function detail(id){
+  activeDetail=id;
+  let p=items.find(x=>x.id===id);
+
+  db.rpc('increment_product_click',{
+    p_product_id:id
+  }).then(({error})=>{
+    if(error) console.warn('خطا در ثبت کلیک:',error);
+  });
+
+  document.getElementById('dCat').textContent=p.cat;
+  document.getElementById('dName').textContent=p.name;
+  document.getElementById('dDesc').textContent=p.desc;
+  document.getElementById('dPrice').textContent=money(p.price);
+
+  const host=document.getElementById('detailVisual');
+  host.innerHTML=modelViewerMarkup(p,'detailModel')+
+  '<div style="font-size:11px;color:#a6b4c1;text-align:center;margin-top:7px">با لمس و کشیدن بچرخانید؛ برای بزرگ‌نمایی دو انگشت را باز کنید.</div>';
+
+  installModelFallback(host,p,'detailModel');
+  show('detail');
+}document.getElementById(id).classList.add('show')}function hide(){document.querySelectorAll('.overlay').forEach(x=>x.classList.remove('show'))}document.querySelectorAll('[data-close]').forEach(b=>b.onclick=hide);document.querySelectorAll('.overlay').forEach(o=>o.onclick=e=>{if(e.target===o)hide()});
 function detail(id){activeDetail=id;let p=items.find(x=>x.id===id);document.getElementById('dCat').textContent=p.cat;document.getElementById('dName').textContent=p.name;document.getElementById('dDesc').textContent=p.desc;document.getElementById('dPrice').textContent=money(p.price);const host=document.getElementById('detailVisual');host.innerHTML=modelViewerMarkup(p,'detailModel')+'<div style="font-size:11px;color:#a6b4c1;text-align:center;margin-top:7px">با لمس و کشیدن بچرخانید؛ برای بزرگ‌نمایی دو انگشت را باز کنید.</div>';installModelFallback(host,p,'detailModel');show('detail')}
 document.getElementById('dAdd').onclick=()=>{add(activeDetail);hide()};
 function cartRender(){let host=document.getElementById('cartLines'),sum=0;host.innerHTML='';Object.entries(cart).forEach(([id,n])=>{let p=items.find(x=>String(x.id)===String(id));if(!p)return;sum+=p.price*n;let row=document.createElement('div');row.className='cartLine';row.innerHTML=`<div><b>${p.name}</b><div style="color:#9aabba;margin-top:4px">${money(p.price)}</div></div><div class="qty"><button data-minus="${id}">−</button><b>${fmt(n)}</b><button data-plus="${id}">+</button></div>`;host.appendChild(row)});if(!host.children.length)host.innerHTML='<p>سبد خرید خالی است.</p>';document.getElementById('total').textContent=money(sum);host.querySelectorAll('[data-minus]').forEach(b=>b.onclick=()=>{let id=b.dataset.minus;cart[id]--;if(cart[id]<=0)delete cart[id];save();cartRender()});host.querySelectorAll('[data-plus]').forEach(b=>b.onclick=()=>{cart[b.dataset.plus]++;save();cartRender()})}

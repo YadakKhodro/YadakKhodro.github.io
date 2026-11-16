@@ -118,7 +118,7 @@ function localModelFor(kind, name=''){
  return '';
 }
 async function updateAccountUI(){const b=document.getElementById('accountBtn');if(sessionUser){b.textContent='حساب من';const {data}=await db.from('profiles').select('full_name,role').eq('id',sessionUser.id).maybeSingle();if(data?.role==='admin')b.textContent='مدیریت فروشگاه';document.getElementById('status').textContent='وارد شده‌اید: '+(data?.full_name||sessionUser.email);}}
-async function loadProducts(){try{const {data,error}=await db.from('products').select('id,name,category,price,description,model_url,source_url,kind,stock').eq('active',true).order('created_at');if(error)throw error;if(data?.length){items=data.map(p=>({id:p.id,name:p.name,cat:p.category,price:Number(p.price),desc:p.description||'',model:localModelFor(p.kind||'disc',p.name)||p.model_url,source:p.source_url,kind:p.kind||'disc',stock:p.stock}));render();}}catch(e){console.warn('استفاده از محصولات نمونه؛ دریافت دیتابیس ممکن نشد',e.message)}}
+async function loadProducts(){try{const {data,error}=await db.from('products').select('id,name,category,price,description,model_url,source_url,kind,stock').eq('active',true).order('created_at');if(error)throw error;if(data?.length){items=data.map(p=>({id:p.id,name:p.name,cat:p.category,price:Number(p.price),desc:p.description||'',model:p.model_url||localModelFor(p.kind||'disc',p.name),source:p.source_url,kind:p.kind||'disc',stock:p.stock}));render();}}catch(e){console.warn('استفاده از محصولات نمونه؛ دریافت دیتابیس ممکن نشد',e.message)}}
 db.auth.getSession().then(({data})=>{sessionUser=data.session?.user||null;updateAccountUI()});
 db.auth.onAuthStateChange((_event,session)=>{sessionUser=session?.user||null;updateAccountUI()});
 let items=[
